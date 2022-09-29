@@ -40,4 +40,5 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         SQL.disconnect();
     }
+
 }

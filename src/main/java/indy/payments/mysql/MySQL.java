@@ -63,7 +63,6 @@ public class MySQL {
 
     public void savePayment(Player player) {
         try {
-            connect();
             String name = player.getName();
             UUID uuid = player.getUniqueId();
 
@@ -73,12 +72,8 @@ public class MySQL {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO dailypayments (NAME, UUID, DATE) VALUES " +
                     "('" + name + "', '" + uuid + "', '" + date_format.format(date) + "')");
             preparedStatement.executeUpdate();
-        } catch(SQLException | ClassNotFoundException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 }
