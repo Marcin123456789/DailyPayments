@@ -7,11 +7,14 @@ import indy.payments.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Main extends JavaPlugin {
 
     public MySQL SQL;
+
+    private Connection connection;
 
     @Override
     public void onEnable() {
@@ -32,6 +35,7 @@ public class Main extends JavaPlugin {
             Bukkit.getLogger().info(Utils.ColorFormat(getConfig().getString("Messages.database-connected")));
             SQL.createTable();
         }
+
         getServer().getPluginManager().registerEvents(new Events(), this);
     }
 

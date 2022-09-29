@@ -64,16 +64,17 @@ public class MySQL {
 
     public void savePayment(Player player) {
         try {
+            connect();
             String name = player.getName();
             UUID uuid = player.getUniqueId();
 
-            SimpleDateFormat date_format = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+            SimpleDateFormat date_format = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
             Date date = new Date(System.currentTimeMillis());
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO dailypayments (NAME, UUID, DATE) VALUES " +
                     "('" + name + "', '" + uuid + "', '" + date_format.format(date) + "')");
             preparedStatement.executeUpdate();
-        } catch(SQLException e) {
+        } catch(SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
