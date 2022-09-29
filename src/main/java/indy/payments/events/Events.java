@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Events implements Listener {
@@ -20,13 +21,13 @@ public class Events implements Listener {
     public MySQL SQL;
     private org.bukkit.World world = Bukkit.getServer().getWorld(getConfig().getString("Payment.area.world"));
     private Location firstAreaCorner = new Location(world,
-            (double) getConfig().getInt("Payment.area.pos1.x"),
-            (double) getConfig().getInt("Payment.area.pos1.y"),
-            (double) getConfig().getInt("Payment.area.pos1.z"));
+            getConfig().getInt("Payment.area.pos1.x"),
+            getConfig().getInt("Payment.area.pos1.y"),
+            getConfig().getInt("Payment.area.pos1.z"));
     private Location secondAreaCorner = new Location(world,
-            (double) getConfig().getInt("Payment.area.pos2.x"),
-            (double) getConfig().getInt("Payment.area.pos2.y"),
-            (double) getConfig().getInt("Payment.area.pos2.z"));
+            getConfig().getInt("Payment.area.pos2.x"),
+            getConfig().getInt("Payment.area.pos2.y"),
+            getConfig().getInt("Payment.area.pos2.z"));
     public Plugin plugin() {
         return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments");
     }
@@ -66,6 +67,11 @@ public class Events implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         this.SQL = new MySQL();
+        try {
+            SQL.connect();
+        } catch (ClassNotFoundException | SQLException ex) {
+            ex.printStackTrace();
+        }
         if(getConfig().getBoolean("Payment.enabled") && getConfig().getString("Payment.payment-type").equalsIgnoreCase("block")) {
             if(contains(e.getBlock().getLocation()) && e.getBlock().getBlockData().getMaterial().equals(Material.getMaterial(getConfig().getString("Payment.block-type")))) {
                 if(getConfig().getBoolean("Payment.announce-to-chat")) {
@@ -73,19 +79,19 @@ public class Events implements Listener {
                            .replace("%player%", e.getPlayer().getName());
                     for(Player players : Bukkit.getOnlinePlayers()) {
                         if(players.hasPermission("payments.announce"))
-                            players.sendMessage(Utils.ColorFormat(message));
+                            players.sendMessage(Utils.color(message));
                     }
                 }
                 if (getConfig().getBoolean("Payment.announce-to-console")) {
                     String message = getConfig().getString("Payment.message")
                            .replace("%player%", e.getPlayer().getName());
-                    Bukkit.getServer().getConsoleSender().sendMessage(Utils.ColorFormat(message));
+                    Bukkit.getServer().getConsoleSender().sendMessage(Utils.color(message));
                 }
                 SQL.savePayment(e.getPlayer());
             } else if(contains(e.getBlock().getLocation()) && getConfig().getBoolean("Payment.prevent-placing-wrong-block")) {
                 String message = getConfig().getString("Messages.wrong-block-message")
                        .replace("%block-type%", getConfig().getString("Payment.block-type"));
-                e.getPlayer().sendMessage(Utils.ColorFormat(message));
+                e.getPlayer().sendMessage(Utils.color(message));
                 e.setCancelled(true);
             }
         }
@@ -102,12 +108,12 @@ public class Events implements Listener {
                            .replace("%player%", event.getPlayer().getName());
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         if (players.hasPermission("payments.announce")) {
-                            players.sendMessage(Utils.ColorFormat(message));
+                            players.sendMessage(Utils.color(message));
                         }
                     }
                 }
                 if(getConfig().getBoolean("Stealing.announce-to-console") && !event.getPlayer().hasPermission("payments.steal")) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(Utils.ColorFormat(getConfig().getString("Stealing.message")
+                    Bukkit.getServer().getConsoleSender().sendMessage(Utils.color(getConfig().getString("Stealing.message")
                            .replace("%player%", event.getPlayer().getName())));
                 }
                 if(getConfig().getBoolean("Stealing.cancel-stealing") && !event.getPlayer().hasPermission("payments.steal")) {
