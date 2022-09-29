@@ -14,8 +14,6 @@ public class Main extends JavaPlugin {
 
     public MySQL SQL;
 
-    private Connection connection;
-
     @Override
     public void onEnable() {
         getConfig().options().copyDefaults(true);

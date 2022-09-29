@@ -1,6 +1,5 @@
 package indy.payments.mysql;
 
-import indy.payments.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -16,11 +15,11 @@ import java.util.UUID;
 
 public class MySQL {
 
-    private String host = getConfig().getString("Database.host");
-    private String port = getConfig().getString("Database.port");
-    private String database = getConfig().getString("Database.database");
-    private String user = getConfig().getString("Database.user");
-    private String password = getConfig().getString("Database.password");
+    private final String host = getConfig().getString("Database.host");
+    private final String port = getConfig().getString("Database.port");
+    private final String database = getConfig().getString("Database.database");
+    private final String user = getConfig().getString("Database.user");
+    private final String password = getConfig().getString("Database.password");
 
     private Connection connection;
 
@@ -33,7 +32,7 @@ public class MySQL {
     }
 
     public boolean isConnected() {
-        return (connection == null ? false : true);
+        return (connection != null);
     }
 
     public void connect() throws ClassNotFoundException, SQLException {
@@ -68,7 +67,7 @@ public class MySQL {
             String name = player.getName();
             UUID uuid = player.getUniqueId();
 
-            SimpleDateFormat date_format = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date date = new Date(System.currentTimeMillis());
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO dailypayments (NAME, UUID, DATE) VALUES " +
@@ -77,5 +76,9 @@ public class MySQL {
         } catch(SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }
