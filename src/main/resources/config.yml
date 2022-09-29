@@ -1,0 +1,95 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                      Messages                        | #
+# +------------------------------------------------------+ #
+############################################################
+Messages:
+  help:
+    - '&6Help for DailyPayments plugin:'
+    - '&7Type &c/payments help &7for plugin help'
+    - '&7Type &c/payments reload &7to reload plugin'
+    - '&7Type &c/payments info &7for plugin info'
+    - '&7Type &c/payments enable &7to enable payments'
+    - '&7Type &c/payments disable &7to disable payments'
+    - '&7Type &c/payments config &7to change payments settings'
+  info:
+    - '&6Payments Plugin Info:'
+    - '&7Author: %author%'
+    - '&7Plugin Version: %version%'
+    - '&7Server Version: %mc-version%'
+  config-get:
+    - '&6Payments Plugin Config:'
+    - '&7World: &c%world%&7.'
+    - '&7Block Type: &c%block%&7.'
+    - '&7Area:'
+    - '&7- First Position X: &c%x1%&7.'
+    - '&7- First Position Y: &c%y1%&7.'
+    - '&7- First Position Z: &c%z1%&7.'
+    - '&7- Second Position X: &c%x2%&7.'
+    - '&7- Second Position Y: &c%y2%&7.'
+    - '&7- Second Position Z: &c%z2%&7.'
+  reload: '&aReloaded DailyPayments Plugin.'
+  missing-argument: '&cYou have to provide an argument! Type /payments help for list of arguments.'
+  wrong-argument: '&cYou have to provide correct argument! Type /payments help for list of arguments.'
+  payments-enable: '&aEnabled DailyPayments!'
+  payments-disable: '&cDisabled DailyPayments!'
+  payments-enabled: '&cPayments are currently enabled!'
+  payments-disabled: '&cPayments are currently disabled!'
+  wrong-block-message: '&cYou cant pay tax with this block, use %block-type%, please.'
+  first-position-change: '&aYou have changed first position of payments area to &cX: %x%&a, &cY: %y%&a, &cZ: %z%&a. Reload to apply changes.'
+  second-position-change: '&aYou have changed second position of payments area to &cX: %x%&a, &cY: %y%&a, &cZ: %z%&a. Reload to apply changes.'
+  world-change: '&aYou have changed world of payments area to &c%world%&a. Reload to apply changes.'
+  block-change: '&aYou have changed payment block type to &c%block%&a. Reload to apply changes.'
+  config-missing-arguments: '&cWrong syntax, try: /payments config <set|get> ...'
+  config-set-missing-arguments: '&cWrong syntax, try: /payments config set <world|block|firstPosition|secondPosition> <[x|world|block]> [y] [z].'
+  non-player-executor: '&cYou can only perform this command as player.'
+  database-connected: 'Database is connected!'
+  database-not-connected: 'Database is not connected!'
+
+############################################################
+# +------------------------------------------------------+ #
+# |                  Payment Settings                    | #
+# +------------------------------------------------------+ #
+############################################################
+Payment:
+  enabled: true
+  payment-type: block
+  block-type: DIAMOND_BLOCK
+  announce-to-chat: true
+  announce-to-console: true
+  prevent-placing-wrong-block: true
+  message: '&6[Taxes] &aPlayer &c%player% &apaid a Tax.'
+  area:
+    world: world
+    pos1:
+      x: 0
+      y: 0
+      z: 0
+    pos2:
+      x: 0
+      y: 0
+      z: 0
+
+############################################################
+# +------------------------------------------------------+ #
+# |                      Stealing                        | #
+# +------------------------------------------------------+ #
+############################################################
+Stealing:
+  prevent-players-from-stealing: true
+  announce-to-chat: true
+  announce-to-console: true
+  message: '&6[Taxes] &aPlayer &c%player% &astole the Tax.'
+  cancel-stealing: true
+
+############################################################
+# +------------------------------------------------------+ #
+# |                      Database                        | #
+# +------------------------------------------------------+ #
+############################################################
+Database:
+  host: localhost
+  port: 3306
+  database: testserver
+  user: root
+  password:

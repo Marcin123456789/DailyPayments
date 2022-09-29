@@ -1,0 +1,18 @@
+name: DailyPayments
+main: indy.payments.main.Main
+version: 1.0
+api-version: 1.18
+authors: [ indyPlayGames ]
+
+commands:
+  payments:
+    description: Daily Payments Setup.
+    aliases: [payments]
+
+permissions:
+  payments.*:
+    description: All permissions.
+  payments.announce:
+    description: Permission to being announced when someones pay or steal tax.
+  payments.steal:
+    description: Permission to steal tax.
