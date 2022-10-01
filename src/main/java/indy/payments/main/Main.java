@@ -25,11 +25,11 @@ public class Main extends JavaPlugin {
             SQL.connect();
         } catch(ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            Bukkit.getLogger().info(Utils.color(getConfig().getString("Messages.database-not-connected")));
+            Bukkit.getLogger().info(Utils.colorFormat(getConfig().getString("Messages.database-not-connected")));
         }
 
         if(SQL.isConnected()) {
-            Bukkit.getLogger().info(Utils.color(getConfig().getString("Messages.database-connected")));
+            Bukkit.getLogger().info(Utils.colorFormat(getConfig().getString("Messages.database-connected")));
             SQL.createTable();
         }
 
