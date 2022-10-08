@@ -36,6 +36,8 @@ Messages:
   payments-enabled: '&cPayments are currently enabled!'
   payments-disabled: '&cPayments are currently disabled!'
   wrong-block-message: '&cYou cant pay tax with this block, use %block-type%, please.'
+  tex-paid-already: '&cYou have already paid tax today!'
+  payment-reminder: '&cYou havent paid your tax today! Do it before its too late.'
   first-position-change: '&aYou have changed first position of payments area to &cX: %x%&a, &cY: %y%&a, &cZ: %z%&a. Reload to apply changes.'
   second-position-change: '&aYou have changed second position of payments area to &cX: %x%&a, &cY: %y%&a, &cZ: %z%&a. Reload to apply changes.'
   world-change: '&aYou have changed world of payments area to &c%world%&a. Reload to apply changes.'
@@ -58,6 +60,8 @@ Payment:
   announce-to-chat: true
   announce-to-console: true
   prevent-placing-wrong-block: true
+  only-one-payment-per-day: true
+  reminder-on-join: true
   message: '&6[Taxes] &aPlayer &c%player% &apaid a Tax.'
   area:
     world: world

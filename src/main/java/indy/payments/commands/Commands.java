@@ -10,6 +10,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Commands implements CommandExecutor {
 
     private Player p;
@@ -80,6 +83,17 @@ public class Commands implements CommandExecutor {
                         } else {
                             sender.sendMessage(Utils.colorFormat(getConfig().getString("Messages.payments-disabled")));
                         }
+                    }
+                    break;
+                case "debug":
+                    try {
+                        SQL.connect();
+                        ResultSet results = SQL.getPayment(p);
+                        while(results.next()) {
+                            sender.sendMessage(results.getString(1));
+                        }
+                    } catch (SQLException | ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                     break;
                 case "config":

@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class MySQL {
     public void createTable() {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS dailypayments " +
-                    "(ID INT AUTO_INCREMENT, NAME VARCHAR(20), UUID VARCHAR(150), DATE DATETIME, PRIMARY KEY (ID))");
+                    "(ID INT AUTO_INCREMENT, NAME VARCHAR(20), UUID VARCHAR(150), DATE DATE, PRIMARY KEY (ID))");
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
@@ -63,7 +64,7 @@ public class MySQL {
             String name = player.getName();
             UUID uuid = player.getUniqueId();
 
-            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date(System.currentTimeMillis());
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO dailypayments (NAME, UUID, DATE) VALUES " +
@@ -78,10 +79,9 @@ public class MySQL {
         try {
             UUID uuid = p.getUniqueId();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = " + uuid);
-            PreparedStatement countResults = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = " + uuid);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = '" + uuid + "'");
+            PreparedStatement countResults = connection.prepareStatement("SELECT COUNT(*) DATE FROM dailypayments WHERE UUID = '" + uuid + "'");
             ResultSet results = preparedStatement.executeQuery();
-            ResultSet results_count = countResults.executeQuery();
             return results;
         } catch(SQLException e) {
             e.printStackTrace();
