@@ -67,7 +67,9 @@ public class Events implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         this.SQL = new MySQL();
-        if(getConfig().getBoolean("Payment.enabled") && getConfig().getString("Payment.payment-type").equalsIgnoreCase("block")) {
+        if(getConfig().getBoolean("Payment.enabled") &&
+           getConfig().getString("Payment.payment-type").equalsIgnoreCase("block") &&
+           e.getPlayer().hasPermission("payments.pay")) {
             if(contains(e.getBlock().getLocation()) && e.getBlock().getBlockData().getMaterial().equals(Material.getMaterial(getConfig().getString("Payment.block-type")))) {
                 if(getConfig().getBoolean("Payment.announce-to-chat")) {
                     String message = getConfig().getString("Payment.message")

@@ -5,10 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -75,5 +72,20 @@ public class MySQL {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ResultSet getPayment(Player p) {
+        try {
+            UUID uuid = p.getUniqueId();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = " + uuid);
+            PreparedStatement countResults = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = " + uuid);
+            ResultSet results = preparedStatement.executeQuery();
+            ResultSet results_count = countResults.executeQuery();
+            return results;
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

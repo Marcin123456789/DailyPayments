@@ -12,7 +12,17 @@ commands:
 permissions:
   payments.*:
     description: All permissions.
+  payments.reload:
+    description: Permission to reload plugin config.
+  payments.enable:
+    description: Permission to enable plugin.
+  payments.disable:
+    description: Permission to disable plugin.
+  payments.config:
+    description: Permission to change plugin config.
   payments.announce:
     description: Permission to being announced when someones pay or steal tax.
+  payments.pay:
+    description: Permission to pay tax.
   payments.steal:
     description: Permission to steal tax.
