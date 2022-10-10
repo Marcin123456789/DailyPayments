@@ -3,6 +3,7 @@ package indy.payments.main;
 import indy.payments.commands.Commands;
 import indy.payments.mysql.MySQL;
 import indy.payments.events.Events;
+import indy.payments.tabcompletion.tabCompletion;
 import indy.payments.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +18,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         getConfig().options().copyDefaults(true);
         getCommand("payments").setExecutor(new Commands());
+        getCommand("payments").setTabCompleter(new tabCompletion());
         saveConfig();
         reloadConfig();
 

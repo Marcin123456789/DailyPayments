@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.Plugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +22,11 @@ import java.util.Date;
 public class Events implements Listener {
 
     public MySQL SQL;
+
+    public static FileConfiguration getConfig() {
+        return Utils.getConfig();
+    }
+
     private org.bukkit.World world = Bukkit.getServer().getWorld(getConfig().getString("Payment.area.world"));
     private Location firstAreaCorner = new Location(world,
             getConfig().getInt("Payment.area.pos1.x"),
@@ -32,13 +36,6 @@ public class Events implements Listener {
             getConfig().getInt("Payment.area.pos2.x"),
             getConfig().getInt("Payment.area.pos2.y"),
             getConfig().getInt("Payment.area.pos2.z"));
-    public Plugin plugin() {
-        return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments");
-    }
-
-    public FileConfiguration getConfig() {
-        return plugin().getConfig();
-    }
 
     public ArrayList<Location> getArea(Location firstCorner, Location secondCorner) {
 
@@ -76,7 +73,7 @@ public class Events implements Listener {
            e.getPlayer().hasPermission("payments.pay")) {
             try {
                 SQL.connect();
-                ResultSet results = SQL.getPayment(e.getPlayer());
+                ResultSet results = SQL.getPayments(e.getPlayer());
                 ArrayList<String> payments = new ArrayList<String>();
                 SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = new Date(System.currentTimeMillis());
@@ -86,23 +83,23 @@ public class Events implements Listener {
                 }
                 if(contains(e.getBlock().getLocation()) &&
                    e.getBlock().getBlockData().getMaterial().equals(Material.getMaterial(getConfig().getString("Payment.block-type")))) {
-                    if(!payments.contains(date_format.format(date).toString()) || !getConfig().getBoolean("Payment.only-one-payment-per-day")) {
+                    if(!payments.contains(Utils.formatDate(date)) || !getConfig().getBoolean("Payment.only-one-payment-per-day")) {
                         if (getConfig().getBoolean("Payment.announce-to-chat")) {
-                            String message = getConfig().getString("Payment.message")
+                            String message = Utils.getMessage("Payment.message")
                                     .replace("%player%", e.getPlayer().getName());
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 if (players.hasPermission("payments.announce"))
-                                    players.sendMessage(Utils.colorFormat(message));
+                                    players.sendMessage(message);
                             }
                         }
                         if (getConfig().getBoolean("Payment.announce-to-console")) {
-                            String message = getConfig().getString("Payment.message")
+                            String message = Utils.getMessage("Payment.message")
                                     .replace("%player%", e.getPlayer().getName());
-                            Bukkit.getServer().getConsoleSender().sendMessage(Utils.colorFormat(message));
+                            Bukkit.getServer().getConsoleSender().sendMessage(message);
                         }
                         SQL.savePayment(e.getPlayer());
                     } else {
-                        e.getPlayer().sendMessage(Utils.colorFormat(getConfig().getString("Messages.tex-paid-already")));
+                        e.getPlayer().sendMessage(Utils.getMessage("Messages.tex-paid-already"));
                         e.setCancelled(true);
                     }
                 } else if(contains(e.getBlock().getLocation()) && getConfig().getBoolean("Payment.prevent-placing-wrong-block")) {
@@ -146,18 +143,22 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         this.SQL = new MySQL();
+        Date date = new Date(System.currentTimeMillis());
         try {
             SQL.connect();
-            ResultSet results = SQL.getPayment(e.getPlayer());
-            ArrayList<String> payments = new ArrayList<String>();
-            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date(System.currentTimeMillis());
+            SQL.registerJoin(e.getPlayer());
 
-            while(results.next()) {
-                payments.add(results.getString(1));
-            }
-            if(!payments.contains(date_format.format(date).toString())) {
-                e.getPlayer().sendMessage(Utils.colorFormat(getConfig().getString("Messages.payment-reminder")));
+            if(getConfig().getBoolean("Payment.reminder-on-join")) {
+
+                ResultSet results = SQL.getPayments(e.getPlayer());
+                ArrayList<String> payments = new ArrayList();
+
+                while (results.next()) {
+                        payments.add(results.getString(1));
+                }
+                if (!payments.contains(Utils.formatDate(date).toString())) {
+                        e.getPlayer().sendMessage(Utils.colorFormat(getConfig().getString("Messages.payment-reminder")));
+                }
             }
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();

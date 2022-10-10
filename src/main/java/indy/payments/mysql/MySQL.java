@@ -1,13 +1,11 @@
 package indy.payments.mysql;
 
-import org.bukkit.Bukkit;
+import indy.payments.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,12 +19,8 @@ public class MySQL {
 
     private Connection connection;
 
-    public Plugin plugin() {
-        return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments");
-    }
-
-    public FileConfiguration getConfig() {
-        return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments").getConfig();
+    public static FileConfiguration getConfig() {
+        return Utils.getConfig();
     }
 
     public boolean isConnected() {
@@ -51,9 +45,12 @@ public class MySQL {
 
     public void createTable() {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS dailypayments " +
+            PreparedStatement paymentsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS dailypayments_payments " +
                     "(ID INT AUTO_INCREMENT, NAME VARCHAR(20), UUID VARCHAR(150), DATE DATE, PRIMARY KEY (ID))");
-            preparedStatement.executeUpdate();
+            PreparedStatement joinsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS dailypayments_joins " +
+                    "(ID INT AUTO_INCREMENT, NAME VARCHAR(20), UUID VARCHAR(150), DATE DATE, PRIMARY KEY (ID))");
+            paymentsTable.executeUpdate();
+            joinsTable.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -63,25 +60,48 @@ public class MySQL {
         try {
             String name = player.getName();
             UUID uuid = player.getUniqueId();
-
-            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date(System.currentTimeMillis());
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO dailypayments (NAME, UUID, DATE) VALUES " +
-                    "('" + name + "', '" + uuid + "', '" + date_format.format(date) + "')");
-            preparedStatement.executeUpdate();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO dailypayments_payments (NAME, UUID, DATE) VALUES " +
+                    "('" + name + "', '" + uuid + "', '" + Utils.formatDate(date) + "')");
         } catch(SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public ResultSet getPayment(Player p) {
+    public ResultSet getPayments(Player p) {
         try {
             UUID uuid = p.getUniqueId();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DATE FROM dailypayments WHERE UUID = '" + uuid + "'");
-            PreparedStatement countResults = connection.prepareStatement("SELECT COUNT(*) DATE FROM dailypayments WHERE UUID = '" + uuid + "'");
-            ResultSet results = preparedStatement.executeQuery();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT DATE FROM dailypayments_payments WHERE UUID = '" + uuid + "'");
+            return results;
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void registerJoin(Player p) {
+        try {
+            String name = p.getName();
+            UUID uuid = p.getUniqueId();
+            Date date = new Date(System.currentTimeMillis());
+
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO dailypayments_joins (NAME, UUID, DATE) VALUES " +
+                    "('" + name + "', '" + uuid + "', '" + Utils.formatDate(date) + "')");
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ResultSet getJoins(String date) {
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT UUID FROM dailypayments_joins WHERE DATE = '" + date + "'");
             return results;
         } catch(SQLException e) {
             e.printStackTrace();

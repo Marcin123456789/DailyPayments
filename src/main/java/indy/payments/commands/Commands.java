@@ -2,7 +2,7 @@ package indy.payments.commands;
 
 import indy.payments.mysql.MySQL;
 import indy.payments.utils.Utils;
-import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,22 +12,24 @@ import org.bukkit.plugin.Plugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class Commands implements CommandExecutor {
 
     private Player p;
     public MySQL SQL;
+
+    public static FileConfiguration getConfig() {
+        return Utils.getConfig();
+    }
+
+    public static Plugin plugin() {
+        return Utils.plugin();
+    }
+
     private final String author = plugin().getDescription().getAuthors().get(0);
     private final String version = plugin().getDescription().getVersion();
     private final String mc_version = plugin().getServer().getVersion();
-
-    public Plugin plugin() {
-        return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments");
-    }
-
-    public FileConfiguration getConfig() {
-        return Bukkit.getServer().getPluginManager().getPlugin("DailyPayments").getConfig();
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String arg, String[] args) {
@@ -88,12 +90,17 @@ public class Commands implements CommandExecutor {
                 case "debug":
                     try {
                         SQL.connect();
-                        ResultSet results = SQL.getPayment(p);
+
+                        Date date = new Date(System.currentTimeMillis());
+                        ResultSet results = SQL.getJoins(Utils.formatDate(date));
                         while(results.next()) {
                             sender.sendMessage(results.getString(1));
                         }
                     } catch (SQLException | ClassNotFoundException e) {
                         e.printStackTrace();
+                    }
+                    for (World w : Utils.plugin().getServer().getWorlds()) {
+                        sender.sendMessage(w.getName().toUpperCase());
                     }
                     break;
                 case "config":
