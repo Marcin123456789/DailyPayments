@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -56,11 +57,10 @@ public class MySQL {
         }
     }
 
-    public void savePayment(Player player) {
+    public void savePayment(Player player, Date date) {
         try {
             String name = player.getName();
             UUID uuid = player.getUniqueId();
-            Date date = new Date(System.currentTimeMillis());
 
             Statement statement = connection.createStatement();
             statement.executeUpdate("INSERT INTO dailypayments_payments (NAME, UUID, DATE) VALUES " +

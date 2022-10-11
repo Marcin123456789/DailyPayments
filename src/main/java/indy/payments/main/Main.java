@@ -6,6 +6,7 @@ import indy.payments.events.Events;
 import indy.payments.tabcompletion.tabCompletion;
 import indy.payments.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -36,6 +37,15 @@ public class Main extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(new Events(), this);
+
+        Events.scheduledEvent(this, new Runnable() {
+            @Override
+            public void run() {
+                for(Player player : Bukkit.getOnlinePlayers()) {
+                    player.sendMessage("Scheduled event!");
+                }
+            }
+        }, getConfig().getInt("Punishments.time.hour"), getConfig().getInt("Punishments.time.min"));
     }
 
     @Override

@@ -61,6 +61,7 @@ Payment:
   announce-to-console: true
   prevent-placing-wrong-block: true
   only-one-payment-per-day: true
+  allow-paying-for-next-days: 0
   reminder-on-join: true
   message: '&6[Taxes] &aPlayer &c%player% &apaid a Tax.'
   area:
@@ -85,6 +86,16 @@ Stealing:
   announce-to-console: true
   message: '&6[Taxes] &aPlayer &c%player% &astole the Tax.'
   cancel-stealing: true
+
+############################################################
+# +------------------------------------------------------+ #
+# |                     Punishments                      | #
+# +------------------------------------------------------+ #
+############################################################
+Punishments:
+  time:
+    hour: 0
+    min: 0
 
 ############################################################
 # +------------------------------------------------------+ #
