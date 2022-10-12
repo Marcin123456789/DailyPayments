@@ -22,6 +22,7 @@ public class tabCompletion implements TabCompleter {
             completion.add("enable");
             completion.add("disable");
             completion.add("config");
+            completion.add("execute_punishments");
         } if(args.length == 2 && args[0].equalsIgnoreCase("config")) {
             completion.add("set");
             completion.add("get");

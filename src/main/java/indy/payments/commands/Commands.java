@@ -92,15 +92,22 @@ public class Commands implements CommandExecutor {
                         SQL.connect();
 
                         Date date = new Date(System.currentTimeMillis());
-                        ResultSet results = SQL.getJoins(Utils.formatDate(date));
+                        ResultSet results = SQL.getPunishments((Player) sender);
                         while(results.next()) {
                             sender.sendMessage(results.getString(1));
                         }
                     } catch (SQLException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-                    for (World w : Utils.plugin().getServer().getWorlds()) {
-                        sender.sendMessage(w.getName().toUpperCase());
+                    break;
+                case "execute_punishments":
+                    try {
+                        SQL.connect();
+
+                        int amount = SQL.executePunishments();
+                        sender.sendMessage(Utils.getMessage("Punishments.manual-punishment-message").replace("%amount%", String.valueOf(amount)));
+                    } catch(SQLException | ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                     break;
                 case "config":

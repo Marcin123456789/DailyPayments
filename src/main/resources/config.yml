@@ -12,6 +12,7 @@ Messages:
     - '&7Type &c/payments enable &7to enable payments'
     - '&7Type &c/payments disable &7to disable payments'
     - '&7Type &c/payments config &7to change payments settings'
+    - '&7Type &c/payments execute_punishments &7to execute old punishments.'
   info:
     - '&6Payments Plugin Info:'
     - '&7Author: %author%'
@@ -93,6 +94,13 @@ Stealing:
 # +------------------------------------------------------+ #
 ############################################################
 Punishments:
+  enabled: true
+  auto-punishment: true
+  punishment: "kick %player%"
+  announce-to-chat: true
+  announce-to-console: true
+  auto-punishment-message: '&cSuccessfully auto punished &a%amount% &cplayer(s).'
+  manual-punishment-message: '&cSuccessfully punished &a%amount% &cplayer(s).'
   time:
     hour: 0
     min: 0
