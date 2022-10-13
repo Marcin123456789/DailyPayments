@@ -101,13 +101,15 @@ public class Commands implements CommandExecutor {
                     }
                     break;
                 case "execute_punishments":
-                    try {
-                        SQL.connect();
+                    if(sender.hasPermission("payments.execute_punishments")) {
+                        try {
+                            SQL.connect();
 
-                        int amount = SQL.executePunishments();
-                        sender.sendMessage(Utils.getMessage("Punishments.manual-punishment-message").replace("%amount%", String.valueOf(amount)));
-                    } catch(SQLException | ClassNotFoundException e) {
-                        e.printStackTrace();
+                            int amount = SQL.executePunishments();
+                            sender.sendMessage(Utils.getMessage("Punishments.manual-punishment-message").replace("%amount%", String.valueOf(amount)));
+                        } catch (SQLException | ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
                 case "config":

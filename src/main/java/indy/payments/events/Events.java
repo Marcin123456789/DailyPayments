@@ -90,8 +90,9 @@ public class Events implements Listener {
                             String message = Utils.getMessage("Payment.message")
                                     .replace("%player%", e.getPlayer().getName());
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (players.hasPermission("payments.announce"))
+                                if (players.hasPermission("payments.announce")) {
                                     players.sendMessage(message);
+                                }
                             }
                         }
                         if (getConfig().getBoolean("Payment.announce-to-console")) {
@@ -116,8 +117,9 @@ public class Events implements Listener {
                                     String message = Utils.getMessage("Payment.message")
                                             .replace("%player%", e.getPlayer().getName());
                                     for (Player players : Bukkit.getOnlinePlayers()) {
-                                        if (players.hasPermission("payments.announce"))
+                                        if (players.hasPermission("payments.announce")) {
                                             players.sendMessage(message);
+                                        }
                                     }
                                 }
                                 if (getConfig().getBoolean("Payment.announce-to-console")) {

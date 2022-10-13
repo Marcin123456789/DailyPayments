@@ -22,7 +22,11 @@ permissions:
     description: Permission to change plugin config.
   payments.announce:
     description: Permission to being announced when someones pay or steal tax.
+  payments.execute_punishments:
+    description: Permission to execute punishments.
   payments.pay:
     description: Permission to pay tax.
   payments.steal:
     description: Permission to steal tax.
+  payments.invincibility:
+    description: Permission to being invincible to punishments.

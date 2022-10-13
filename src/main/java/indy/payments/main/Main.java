@@ -77,8 +77,10 @@ public class Main extends JavaPlugin {
                             int amount = SQL.executePunishments();
                             if(getConfig().getBoolean("Punishments.announce-to-chat")) {
                                 for (Player player : Bukkit.getOnlinePlayers()) {
-                                    player.sendMessage(Utils.getMessage("Punishments.auto-punishment-message")
-                                            .replace("%amount%", String.valueOf(amount)));
+                                    if(player.hasPermission("payments.announce")) {
+                                        player.sendMessage(Utils.getMessage("Punishments.auto-punishment-message")
+                                                .replace("%amount%", String.valueOf(amount)));
+                                    }
                                 }
                             }
                             if(getConfig().getBoolean("Punishments.announce-to-console")) {

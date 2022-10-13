@@ -154,13 +154,12 @@ public class MySQL {
             }
 
             for(Player player : Bukkit.getOnlinePlayers()) {
-                for(int i = 0; i < punishments.size(); i++) {
-                    player.sendMessage(punishments.get(i) + ", " + player.getUniqueId());
-                }
                 if(punishments.contains(player.getUniqueId().toString())) {
                     punishmentsAmount++;
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getConfig().getString("Punishments.punishment")
-                            .replace("%player%", player.getName()));
+                    if(!player.hasPermission("payments.invincibility")) {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getConfig().getString("Punishments.punishment")
+                                .replace("%player%", player.getName()));
+                    }
                     clearPunishments.executeUpdate("DELETE FROM dailypayments_punishments WHERE UUID = '" + player.getUniqueId() + "'");
                 }
             }
