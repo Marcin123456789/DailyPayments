@@ -2,7 +2,6 @@ package indy.payments.commands;
 
 import indy.payments.mysql.MySQL;
 import indy.payments.utils.Utils;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

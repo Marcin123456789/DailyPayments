@@ -83,6 +83,7 @@ Payment:
 ############################################################
 Stealing:
   prevent-players-from-stealing: true
+  prevent-tnt-explosions: true
   announce-to-chat: true
   announce-to-console: true
   message: '&6[Taxes] &aPlayer &c%player% &astole the Tax.'

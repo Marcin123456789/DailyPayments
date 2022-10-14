@@ -5,18 +5,19 @@ import indy.payments.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,8 +72,7 @@ public class Events implements Listener {
     public void onPlace(BlockPlaceEvent e) {
         this.SQL = new MySQL();
         if(getConfig().getBoolean("Payment.enabled") &&
-           getConfig().getString("Payment.payment-type").equalsIgnoreCase("block") &&
-           e.getPlayer().hasPermission("payments.pay")) {
+           getConfig().getString("Payment.payment-type").equalsIgnoreCase("block")) {
             try {
                 SQL.connect();
                 ResultSet results = SQL.getPayments(e.getPlayer());
@@ -84,57 +84,61 @@ public class Events implements Listener {
                 }
                 if(contains(e.getBlock().getLocation()) &&
                    e.getBlock().getBlockData().getMaterial().equals(Material.getMaterial(getConfig().getString("Payment.block-type")))) {
-                    if((!payments.contains(Utils.formatDate(date)) ||
-                       (!getConfig().getBoolean("Payment.only-one-payment-per-day")) && getConfig().getInt("Payment.allow-paying-for-next-days") == 0)) {
-                        if (getConfig().getBoolean("Payment.announce-to-chat")) {
-                            String message = Utils.getMessage("Payment.message")
-                                    .replace("%player%", e.getPlayer().getName());
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (players.hasPermission("payments.announce")) {
-                                    players.sendMessage(message);
-                                }
-                            }
-                        }
-                        if (getConfig().getBoolean("Payment.announce-to-console")) {
-                            String message = Utils.getMessage("Payment.message")
-                                    .replace("%player%", e.getPlayer().getName());
-                            Bukkit.getServer().getConsoleSender().sendMessage(message);
-                        }
-                        date = new Date(System.currentTimeMillis());
-                        SQL.savePayment(e.getPlayer(), date);
-                    } else if(!getConfig().getBoolean("Payment.only-one-payment-per-day") && getConfig().getInt("Payment.allow-paying-for-next-days") > 0) {
-                        for(int i = 0; i < getConfig().getInt("Payment.allow-paying-for-next-days"); i++) {
-                            Date nextDate = new Date(System.currentTimeMillis() + ((i + 1) * 86400000));
-                            results = SQL.getPayments(e.getPlayer());
-
-                            while(results.next()) {
-                                payments.add(results.getString(1));
-                            }
-
-                            if(!payments.contains(Utils.formatDate(nextDate))) {
-                                SQL.savePayment(e.getPlayer(), nextDate);
-                                if (getConfig().getBoolean("Payment.announce-to-chat")) {
-                                    String message = Utils.getMessage("Payment.message")
-                                            .replace("%player%", e.getPlayer().getName());
-                                    for (Player players : Bukkit.getOnlinePlayers()) {
-                                        if (players.hasPermission("payments.announce")) {
-                                            players.sendMessage(message);
-                                        }
+                    if(e.getPlayer().hasPermission("payments.pay")) {
+                        if ((!payments.contains(Utils.formatDate(date)) ||
+                                (!getConfig().getBoolean("Payment.only-one-payment-per-day")) && getConfig().getInt("Payment.allow-paying-for-next-days") == 0)) {
+                            if (getConfig().getBoolean("Payment.announce-to-chat")) {
+                                String message = Utils.getMessage("Payment.message")
+                                        .replace("%player%", e.getPlayer().getName());
+                                for (Player players : Bukkit.getOnlinePlayers()) {
+                                    if (players.hasPermission("payments.announce")) {
+                                        players.sendMessage(message);
                                     }
                                 }
-                                if (getConfig().getBoolean("Payment.announce-to-console")) {
-                                    String message = Utils.getMessage("Payment.message")
-                                            .replace("%player%", e.getPlayer().getName());
-                                    Bukkit.getServer().getConsoleSender().sendMessage(message);
-                                }
-                                break;
-                            } else if(!(i < (getConfig().getInt("Payment.allow-paying-for-next-days") - 1))) {
-                                e.getPlayer().sendMessage(Utils.getMessage("Messages.tex-paid-already"));
-                                e.setCancelled(true);
                             }
+                            if (getConfig().getBoolean("Payment.announce-to-console")) {
+                                String message = Utils.getMessage("Payment.message")
+                                        .replace("%player%", e.getPlayer().getName());
+                                Bukkit.getServer().getConsoleSender().sendMessage(message);
+                            }
+                            date = new Date(System.currentTimeMillis());
+                            SQL.savePayment(e.getPlayer(), date);
+                        } else if (!getConfig().getBoolean("Payment.only-one-payment-per-day") && getConfig().getInt("Payment.allow-paying-for-next-days") > 0) {
+                            for (int i = 0; i < getConfig().getInt("Payment.allow-paying-for-next-days"); i++) {
+                                Date nextDate = new Date(System.currentTimeMillis() + ((i + 1) * 86400000));
+                                results = SQL.getPayments(e.getPlayer());
+
+                                while (results.next()) {
+                                    payments.add(results.getString(1));
+                                }
+
+                                if (!payments.contains(Utils.formatDate(nextDate))) {
+                                    SQL.savePayment(e.getPlayer(), nextDate);
+                                    if (getConfig().getBoolean("Payment.announce-to-chat")) {
+                                        String message = Utils.getMessage("Payment.message")
+                                                .replace("%player%", e.getPlayer().getName());
+                                        for (Player players : Bukkit.getOnlinePlayers()) {
+                                            if (players.hasPermission("payments.announce")) {
+                                                players.sendMessage(message);
+                                            }
+                                        }
+                                    }
+                                    if (getConfig().getBoolean("Payment.announce-to-console")) {
+                                        String message = Utils.getMessage("Payment.message")
+                                                .replace("%player%", e.getPlayer().getName());
+                                        Bukkit.getServer().getConsoleSender().sendMessage(message);
+                                    }
+                                    break;
+                                } else if (!(i < (getConfig().getInt("Payment.allow-paying-for-next-days") - 1))) {
+                                    e.getPlayer().sendMessage(Utils.getMessage("Messages.tex-paid-already"));
+                                    e.setCancelled(true);
+                                }
+                            }
+                        } else {
+                            e.getPlayer().sendMessage(Utils.getMessage("Messages.tex-paid-already"));
+                            e.setCancelled(true);
                         }
                     } else {
-                        e.getPlayer().sendMessage(Utils.getMessage("Messages.tex-paid-already"));
                         e.setCancelled(true);
                     }
                 } else if(contains(e.getBlock().getLocation()) && getConfig().getBoolean("Payment.prevent-placing-wrong-block")) {
@@ -171,6 +175,17 @@ public class Events implements Listener {
                 if(getConfig().getBoolean("Stealing.cancel-stealing") && !event.getPlayer().hasPermission("payments.steal")) {
                     event.setCancelled(true);
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onExplode(EntityExplodeEvent e) {
+        for(Block block : e.blockList()) {
+            if(contains(block.getLocation()) &&
+               block.getBlockData().getMaterial().equals(Material.getMaterial(getConfig().getString("Payment.block-type"))) &&
+               getConfig().getBoolean("Stealing.prevent-tnt-explosions")) {
+                e.setCancelled(true);
             }
         }
     }
