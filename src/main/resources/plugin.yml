@@ -1,6 +1,6 @@
 name: DailyPayments
 main: indy.payments.main.Main
-version: 1.0
+version: '${project.version}'
 api-version: 1.18
 authors: [ indyPlayGames ]
 
@@ -14,10 +14,8 @@ permissions:
     description: All permissions.
   payments.reload:
     description: Permission to reload plugin config.
-  payments.enable:
-    description: Permission to enable plugin.
-  payments.disable:
-    description: Permission to disable plugin.
+  payments.toggle:
+    description: Permission to toggle plugin.
   payments.config:
     description: Permission to change plugin config.
   payments.announce:

@@ -14,7 +14,7 @@ import java.util.List;
 public class tabCompletion implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String arg, String[] args) {
-        List<String> completion = new ArrayList<String>();
+        List<String> completion = new ArrayList<>();
         if(args.length == 1) {
             completion.add("help");
             completion.add("info");
@@ -51,10 +51,10 @@ public class tabCompletion implements TabCompleter {
             Player p = (Player) sender;
             switch(args.length) {
                 case 4:
-                    completion.add((int) p.getLocation().getX() + " " + (int) p.getLocation().getY() + " " + (int) p.getLocation().getZ());
+                    completion.add(String.valueOf((int) p.getLocation().getX()));
                     break;
                 case 5:
-                    completion.add((int) p.getLocation().getY() + " " + (int) p.getLocation().getZ());
+                    completion.add(String.valueOf((int) p.getLocation().getY()));
                     break;
                 case 6:
                     completion.add(String.valueOf((int) p.getLocation().getZ()));

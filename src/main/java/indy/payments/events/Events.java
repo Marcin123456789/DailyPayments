@@ -210,6 +210,9 @@ public class Events implements Listener {
                         e.getPlayer().sendMessage(Utils.colorFormat(getConfig().getString("Messages.payment-reminder")));
                 }
             }
+            if(getConfig().getBoolean("Punishments.auto-punish-on-join")) {
+                SQL.executePunishments();
+            }
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }

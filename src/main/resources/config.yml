@@ -9,8 +9,7 @@ Messages:
     - '&7Type &c/payments help &7for plugin help'
     - '&7Type &c/payments reload &7to reload plugin'
     - '&7Type &c/payments info &7for plugin info'
-    - '&7Type &c/payments enable &7to enable payments'
-    - '&7Type &c/payments disable &7to disable payments'
+    - '&7Type &c/payments toggle &7to toggle payments'
     - '&7Type &c/payments config &7to change payments settings'
     - '&7Type &c/payments execute_punishments &7to execute old punishments.'
   info:
@@ -34,8 +33,6 @@ Messages:
   wrong-argument: '&cYou have to provide correct argument! Type /payments help for list of arguments.'
   payments-enable: '&aEnabled DailyPayments!'
   payments-disable: '&cDisabled DailyPayments!'
-  payments-enabled: '&cPayments are currently enabled!'
-  payments-disabled: '&cPayments are currently disabled!'
   wrong-block-message: '&cYou cant pay tax with this block, use %block-type%, please.'
   tex-paid-already: '&cYou have already paid tax today!'
   payment-reminder: '&cYou havent paid your tax today! Do it before its too late.'
@@ -46,6 +43,7 @@ Messages:
   config-missing-arguments: '&cWrong syntax, try: /payments config <set|get> ...'
   config-set-missing-arguments: '&cWrong syntax, try: /payments config set <world|block|firstPosition|secondPosition> <[x|world|block]> [y] [z].'
   non-player-executor: '&cYou can only perform this command as player.'
+  not-integer-input: '&cYou have to provide valid coordinates.'
   database-connected: 'Database is connected!'
   database-not-connected: 'Database is not connected!'
 
@@ -97,6 +95,7 @@ Stealing:
 Punishments:
   enabled: true
   auto-punishment: true
+  auto-punish-on-join: true
   punishment: "kick %player%"
   announce-to-chat: true
   announce-to-console: true

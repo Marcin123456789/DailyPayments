@@ -1,6 +1,6 @@
 package indy.payments.main;
 
-import indy.payments.commands.Commands;
+import indy.payments.commands.*;
 import indy.payments.mysql.MySQL;
 import indy.payments.events.Events;
 import indy.payments.tabcompletion.tabCompletion;
@@ -22,7 +22,16 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         getConfig().options().copyDefaults(true);
-        getCommand("payments").setExecutor(new Commands());
+
+        Commands commands = new Commands();
+        commands.registerSubCommand("help", new helpCommand());
+        commands.registerSubCommand("info", new infoCommand());
+        commands.registerSubCommand("reload", new reloadCommand());
+        commands.registerSubCommand("toggle", new toggleCommand());
+        commands.registerSubCommand("executePunishments", new executePunishmentsCommand());
+        commands.registerSubCommand("config", new configCommand());
+
+        getCommand("payments").setExecutor(commands);
         getCommand("payments").setTabCompleter(new tabCompletion());
         saveConfig();
         reloadConfig();
